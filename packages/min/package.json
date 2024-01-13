@@ -1,0 +1,54 @@
+{
+  "name": "astro-min",
+  "version": "1.0.0",
+  "description": "Extremely ⚡ Fast 🌀 Smart  ⭕  HTML 🟠 JS 🟡 CSS 🔵 SVG 🟣 Minification 💠",
+  "keywords": [
+    "astro",
+    "astro-component",
+    "astro-integration",
+    "minify",
+    "html-minify",
+    "lightningcss",
+    "minify-html",
+    "minify-js",
+    "optimization",
+    "perf",
+    "performance",
+    "rust",
+    "svgo",
+    "withastro"
+  ],
+  "license": "ISC",
+  "author": "Marc Redwerkz",
+  "type": "module",
+  "main": "dist/index.js",
+  "source": "src/index.ts",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "package.json",
+    "LICENSE.txt",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "format": "ts-standard --fix src",
+    "prepublishOnly": "pnpm build",
+    "watch": "tsup --watch"
+  },
+  "dependencies": {
+    "@minify-html/node": "^0.15.0",
+    "svgo": "^3.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "astro": "^4.1.2",
+    "glob": "^10.3.10",
+    "ts-standard": "^12.0.2",
+    "tsup": "^8.0.1",
+    "typescript": "5.1.6"
+  },
+  "peerDependencies": {
+    "astro": "^4.0.0 || ^3.0.0 || ^2.0.0 || ^1.0.0"
+  }
+}
