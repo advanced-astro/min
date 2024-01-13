@@ -1,6 +1,6 @@
 # astro-min
 
-> Extremely Fast and Smart Minification of 🟠 HTML 🟡 JS 🔵 CSS 🟣 SVG
+> Extremely Fast and Smart Minification of 🟠 HTML 🟡 JS 🔵 CSS 🟣 SVG  
 > Meticulously optimized for Speed 🥇 and Effectiveness 🏅
 
 ![Astro](https://img.shields.io/badge/astro-%238d46e7.svg?style=flat-square&logo=astro&logoColor=white)
@@ -70,4 +70,4 @@ export default defineConfig({
 
 - <https://github.com/wilsonzlin/minify-html>
   -
-  - 
+  -
