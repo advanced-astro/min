@@ -1,0 +1,21 @@
+{
+  "name": "root",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm --filter astro-min --filter demo run build",
+    "prepack": "npmignore --auto",
+    "version": "changeset version && pnpm install --no-frozen-lockfile --lockfile-only",
+    "publish:dry": "pnpm publish --dry-run --filter astro-min --no-git-checks",
+    "publish": "pnpm publish --filter astro-min --no-git-checks"
+  },
+  "packageManager": "pnpm@8.14.1",
+  "dependencies": {
+    "@changesets/changelog-github": "^0.5.0",
+    "@changesets/cli": "^2.27.1"
+  },
+  "devDependencies": {
+    "npmignore": "^0.3.1"
+  }
+}
