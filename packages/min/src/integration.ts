@@ -16,7 +16,7 @@ import { Options } from './utils/options'
  * @param {Options} [options] - The options for the integration.
  * @return {AstroIntegration} - The created integration.
  */
- export function createIntegration (options?: Options): AstroIntegration {
+export function createIntegration (options?: Options): AstroIntegration {
   return {
     name: 'astro-min',
     hooks: {
@@ -30,9 +30,9 @@ import { Options } from './utils/options'
         const htmlFiles = await glob('**/*.{css,html,js}', { cwd })
         const svgFiles = await glob('**/*.svg', { cwd })
 
-        if (htmlFiles.length === 0 && svgFiles.length === 0 ) return
+        if (htmlFiles.length === 0 && svgFiles.length === 0) return
 
-        let relative = "0%"
+        let relative = '0%'
         let absolute = 0
         let sizeNew = 0
         let sizeOld = 0
@@ -59,20 +59,20 @@ import { Options } from './utils/options'
             multipass: true,
             plugins: [
               {
-                name: "preset-default",
+                name: 'preset-default',
                 params: {
                   overrides: {
-                    removeViewBox: false,
-                  },
-                },
-              },
-            ],
+                    removeViewBox: false
+                  }
+                }
+              }
+            ]
           })
-          
+
           await fs.promises.writeFile(filePath, svgMin.data, 'utf-8')
         }
 
-        const humanSizeOld = sizeOld < 100 ? sizeOld.toFixed(1) + ' Bytes' : (sizeOld / 1000).toFixed(2) + ' KB'
+        // const humanSizeOld = sizeOld < 100 ? sizeOld.toFixed(1) + ' Bytes' : (sizeOld / 1000).toFixed(2) + ' KB'
         const humanSizeMin = sizeNew < 100 ? sizeNew.toFixed(1) + ' Bytes' : (sizeNew / 1000).toFixed(2) + ' KB'
 
         const end = performance.now()
