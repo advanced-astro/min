@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "pnpm --filter astro-min --filter demo run build",
+    "format": "ts-standard --fix packages",
     "prepack": "npmignore --auto",
     "version": "changeset version && pnpm install --no-frozen-lockfile --lockfile-only",
     "publish:dry": "pnpm publish --dry-run --filter astro-min --no-git-checks",
@@ -16,6 +17,7 @@
     "@changesets/cli": "^2.27.1"
   },
   "devDependencies": {
-    "npmignore": "^0.3.1"
+    "npmignore": "^0.3.1",
+    "ts-standard": "^12.0.2"
   }
 }
