@@ -65,7 +65,7 @@ import minify from 'astro-min'
 
 export default defineConfig({
   integrations: [
-    minify(
+    minify({
       do_not_minify_doctype: false,
       ensure_spec_compliant_unquoted_attribute_values: false,
       keep_closing_tags: false,
@@ -80,7 +80,7 @@ export default defineConfig({
       preserve_chevron_percent_template_syntax: false,
       remove_bangs: false,
       remove_processing_instructions: false,
-    )
+    })
   ]
 })
 ```
