@@ -1,6 +1,6 @@
 {
   "name": "astro-min",
-  "version": "1.1.0-dev.1",
+  "version": "1.1.0",
   "description": "Extremely ⚡ Fast 🌀 Smart  ⭕  HTML 🟠 JS 🟡 CSS 🔵 SVG 🟣 Minification 💠",
   "keywords": [
     "astro",
@@ -18,6 +18,11 @@
     "svgo",
     "withastro"
   ],
+  "homepage": "https://github.com/advanced-astro/astro-min#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/advanced-astro/astro-min.git"
+  },
   "license": "ISC",
   "author": "Marc Redwerkz",
   "type": "module",
@@ -34,7 +39,7 @@
   ],
   "scripts": {
     "build": "tsup",
-    "prepublishOnly": "pnpm build",
+    "prepublishOnly": "tsup",
     "watch": "tsup --watch"
   },
   "dependencies": {
@@ -42,18 +47,13 @@
     "svgo": "^3.2.0"
   },
   "devDependencies": {
-    "@types/node": "^20.11.6",
-    "astro": "^4.2.4",
+    "@types/node": "^20.11.16",
+    "astro": "^4.3.5",
     "glob": "^10.3.10",
     "tsup": "^8.0.1",
-    "typescript": "5.2.0"
+    "typescript": "5.3.3"
   },
   "peerDependencies": {
     "astro": "^4.0.0 || ^3.0.0 || ^2.0.0 || ^1.0.0"
-  },
-  "homepage": "https://github.com/advanced-astro/astro-min#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/advanced-astro/astro-min.git"
   }
 }

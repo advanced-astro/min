@@ -8,7 +8,10 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{json,md}]
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{json,md,ts}]
 indent_style = space
 
 [*.{cjs,json,mjs,svg,yaml,yml}]

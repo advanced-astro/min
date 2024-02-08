@@ -16,7 +16,7 @@ import { Options } from './utils/options'
  * @param {Options} [options] - The options for the integration.
  * @return {AstroIntegration} - The created integration.
  */
-export function createIntegration (options?: Options): AstroIntegration {
+export function createIntegration(options?: Options): AstroIntegration {
   return {
     name: 'astro-min',
     hooks: {
@@ -41,7 +41,10 @@ export function createIntegration (options?: Options): AstroIntegration {
           const filePath = join(cwd, filename)
 
           const htmlOrg = await fs.promises.readFile(filePath, 'utf8')
-          const htmlMin = minifyHtml.minify(Buffer.from(htmlOrg), (options != null) ? options : {})
+          const htmlMin = minifyHtml.minify(
+            Buffer.from(htmlOrg),
+            options != null ? options : {},
+          )
 
           await fs.promises.writeFile(filePath, htmlMin, 'utf-8')
 
@@ -62,28 +65,38 @@ export function createIntegration (options?: Options): AstroIntegration {
                 name: 'preset-default',
                 params: {
                   overrides: {
-                    removeViewBox: false
-                  }
-                }
-              }
-            ]
+                    removeViewBox: false,
+                  },
+                },
+              },
+            ],
           })
 
           await fs.promises.writeFile(filePath, svgMin.data, 'utf-8')
         }
 
         // const humanSizeOld = sizeOld < 100 ? sizeOld.toFixed(1) + ' Bytes' : (sizeOld / 1000).toFixed(2) + ' KB'
-        const humanSizeMin = sizeNew < 100 ? sizeNew.toFixed(1) + ' Bytes' : (sizeNew / 1000).toFixed(2) + ' KB'
+        const humanSizeMin =
+          sizeNew < 100
+            ? `${sizeNew.toFixed(1)} Bytes`
+            : `${(sizeNew / 1000).toFixed(2)} KB`
 
         const end = performance.now()
         const deltaT = end - start
-        const humanTime = deltaT < 1000 ? deltaT.toFixed(0) + 'ms' : (deltaT / 1000).toFixed(1) + 's'
+        const humanTime =
+          deltaT < 1000
+            ? `${deltaT.toFixed(0)}ms`
+            : `${(deltaT / 1000).toFixed(1)}s`
 
         logServerMessage(`✓ Completed in ${humanTime}`)
-        logServerMessage(`${htmlFiles.length + svgFiles.length} files minified (-${relative}) ${humanSizeMin}`)
+        logServerMessage(
+          `${
+            htmlFiles.length + svgFiles.length
+          } files minified (-${relative}) ${humanSizeMin}`,
+        )
         // logServerMessage(`${htmlFiles.length} files minified from ${humanSizeOld} down to ${humanSizeMin}`)
-      }
-    }
+      },
+    },
   }
 }
 

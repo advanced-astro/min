@@ -1,7 +1,10 @@
 {
     "cSpell.words": [
+      "astro",
       "Astro",
       "astrojs",
+      "biomejs",
+      "Codespaces",
       "commitlint",
       "lightningcss",
       "minifier",
@@ -10,6 +13,7 @@
       "Redwerkz",
       "tsconfigs",
       "tsup",
+      "volta",
       "withastro"
     ],
     "json.schemas": [
