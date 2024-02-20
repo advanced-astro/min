@@ -1,9 +1,9 @@
 import { defineConfig } from 'astro/config'
-import minify from 'astro-min'
+import min from 'astro-min'
 
 export default defineConfig({
   integrations: [
-    minify(
+    min(
       {
         do_not_minify_doctype: false,
         ensure_spec_compliant_unquoted_attribute_values: false,

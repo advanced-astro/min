@@ -1,6 +1,6 @@
-import fs from 'node:fs'
-import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import fs from 'fs'
+import { join } from 'path'
+import { fileURLToPath } from 'url'
 
 import minifyHtml from '@minify-html/node'
 import type { AstroIntegration } from 'astro'
@@ -8,8 +8,9 @@ import { glob } from 'glob'
 import { performance } from 'perf_hooks'
 
 import { optimize } from 'svgo'
-import { logServerMessage } from './utils/logger'
-import { Options } from './utils/options'
+import { logServerMessage } from './utils/logger.ts'
+import { Options } from './utils/options.ts'
+
 /**
  * Creates a new integration with the given options.
  *
@@ -17,87 +18,92 @@ import { Options } from './utils/options'
  * @return {AstroIntegration} - The created integration.
  */
 export function createIntegration(options?: Options): AstroIntegration {
-  return {
-    name: 'astro-min',
-    hooks: {
-      'astro:config:setup': async ({ config }) => {
-        config.compressHTML = false
-      },
-      'astro:build:done': async ({ dir }) => {
-        const start = performance.now()
-        const cwd = fileURLToPath(dir)
+	return {
+		name: 'astro-min',
+		hooks: {
+			'astro:config:setup': async ({ config }) => {
+				config.compressHTML = false
+			},
+			'astro:build:done': async ({ dir }) => {
+				const start = performance.now()
+				const cwd = fileURLToPath(dir)
 
-        const htmlFiles = await glob('**/*.{css,html,js}', { cwd })
-        const svgFiles = await glob('**/*.svg', { cwd })
+				const [cssFiles, htmlFiles, jsFiles, svgFiles] = await Promise.all([
+					glob('**/*.css', { cwd, ignore: ['**/*-min.css', '**/*.min.css'] }),
+					glob('**/*.html', { cwd }),
+					glob('**/*.js', { cwd, ignore: ['**/*.min.js', '**/*.min.js'] }),
+					glob('**/*.svg', { cwd }),
+				])
 
-        if (htmlFiles.length === 0 && svgFiles.length === 0) return
+				if (htmlFiles.length === 0 && svgFiles.length === 0) return
 
-        let relative = '0%'
-        let absolute = 0
-        let sizeNew = 0
-        let sizeOld = 0
+				/**
+				 * A function that minifies and writes a file.
+				 *
+				 * @param {string} filename - the name of the file to minify and write
+				 * @param {string} type - the type of file
+				 * @return {Promise<void>} a Promise that resolves when the file is minified and written
+				 */
+				const minifyAndWriteFile = async (
+					filename: string,
+					type: string,
+				): Promise<void> => {
+					const filePath = join(cwd, filename)
+					const fileOrg = await fs.promises.readFile(filePath, 'utf8')
+					// biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
+					let fileMin
+					if (type === 'svg') {
+						fileMin = optimize(fileOrg, {
+							multipass: true,
+							plugins: [
+								{
+									name: 'preset-default',
+									params: {
+										overrides: {
+											removeViewBox: false,
+										},
+									},
+								},
+							],
+						})
+						await fs.promises.writeFile(filePath, fileMin.data, 'utf-8')
+					} else {
+						fileMin = minifyHtml.minify(
+							Buffer.from(fileOrg),
+							options != null ? options : {},
+						)
+						await fs.promises.writeFile(filePath, fileMin, 'utf-8')
+					}
+				}
 
-        for (const filename of htmlFiles) {
-          const filePath = join(cwd, filename)
+				const minifyAndWritePromises = []
 
-          const htmlOrg = await fs.promises.readFile(filePath, 'utf8')
-          const htmlMin = minifyHtml.minify(
-            Buffer.from(htmlOrg),
-            options != null ? options : {},
-          )
+				for (const filename of cssFiles) {
+					minifyAndWritePromises.push(minifyAndWriteFile(filename, 'css'))
+				}
+				for (const filename of htmlFiles) {
+					minifyAndWritePromises.push(minifyAndWriteFile(filename, 'html'))
+				}
+				for (const filename of jsFiles) {
+					minifyAndWritePromises.push(minifyAndWriteFile(filename, 'js'))
+				}
+				for (const filename of svgFiles) {
+					minifyAndWritePromises.push(minifyAndWriteFile(filename, 'svg'))
+				}
 
-          await fs.promises.writeFile(filePath, htmlMin, 'utf-8')
+				await Promise.all(minifyAndWritePromises)
 
-          sizeNew += Buffer.byteLength(htmlMin, 'utf8')
-          sizeOld += Buffer.byteLength(htmlOrg, 'utf8')
-          absolute = sizeOld - sizeNew
-          relative = `${((absolute / sizeOld) * 100).toFixed(1)}%`
-        }
+				const end = performance.now()
+				const deltaT = end - start
+				const humanTime =
+					deltaT < 1000
+						? `${deltaT.toFixed(0)}ms`
+						: `${(deltaT / 1000).toFixed(1)}s`
 
-        for (const filename of svgFiles) {
-          const filePath = join(cwd, filename)
-
-          const svgOrg = await fs.promises.readFile(filePath, 'utf8')
-          const svgMin = optimize(svgOrg, {
-            multipass: true,
-            plugins: [
-              {
-                name: 'preset-default',
-                params: {
-                  overrides: {
-                    removeViewBox: false,
-                  },
-                },
-              },
-            ],
-          })
-
-          await fs.promises.writeFile(filePath, svgMin.data, 'utf-8')
-        }
-
-        // const humanSizeOld = sizeOld < 100 ? sizeOld.toFixed(1) + ' Bytes' : (sizeOld / 1000).toFixed(2) + ' KB'
-        const humanSizeMin =
-          sizeNew < 100
-            ? `${sizeNew.toFixed(1)} Bytes`
-            : `${(sizeNew / 1000).toFixed(2)} KB`
-
-        const end = performance.now()
-        const deltaT = end - start
-        const humanTime =
-          deltaT < 1000
-            ? `${deltaT.toFixed(0)}ms`
-            : `${(deltaT / 1000).toFixed(1)}s`
-
-        logServerMessage(`✓ Completed in ${humanTime}`)
-        logServerMessage(
-          `${
-            htmlFiles.length + svgFiles.length
-          } files minified (-${relative}) ${humanSizeMin}`,
-        )
-        // logServerMessage(`${htmlFiles.length} files minified from ${humanSizeOld} down to ${humanSizeMin}`)
-      },
-    },
-  }
+				logServerMessage(`✴️ Completed in ${humanTime}`)
+			},
+		},
+	}
 }
 
 export default createIntegration
