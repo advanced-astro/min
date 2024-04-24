@@ -1,6 +1,6 @@
 {
   "name": "astro-min",
-  "version": "1.2.6",
+  "version": "1.2.8",
   "description": "Extremely ⚡ fast and smart 🟠 HTML 🟡 JS 🔵 CSS 🟣 SVG minification for Astro 🚀 based on Rust 🦀",
   "keywords": [
     "astro",
@@ -39,20 +39,20 @@
   ],
   "scripts": {
     "build": "tsup",
-    "prepublishOnly": "bumpp",
-    "watch": "tsup --watch"
+    "dev": "tsup --watch"
   },
   "dependencies": {
-    "@minify-html/node": "^0.15.0",
+    "@minify-html/node": "0.15.0",
     "svgo": "^3.2.0"
   },
   "devDependencies": {
-    "astro": "^4.4.2",
-    "glob": "^10.3.10",
+    "astro": "^4.6.3",
+    "glob": "^10.3.12",
     "tsup": "^8.0.2",
     "typescript": "5.3.3"
   },
   "peerDependencies": {
     "astro": "^4.0.0 || ^3.0.0 || ^2.0.0 || ^1.0.0"
-  }
+  },
+  "packageManager": "pnpm@9.0.5"
 }
